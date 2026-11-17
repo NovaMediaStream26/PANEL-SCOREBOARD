@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>ONE SPORTS - Marcador</title>
+<link rel="stylesheet" href="os-common.css"></head>
+<body>
+<div id="wrap" class="sk">
+  <div class="comp hidden" id="comp"></div>
+  <div id="sb">
+    <div class="blk logo"><div class="one">ONE</div><div class="sports">SPORTS</div></div>
+    <div class="blk team" id="ht"><span class="tab"></span><img id="hl" alt=""><span class="nm" id="hn">LOCAL</span></div>
+    <div class="blk score" id="hs">0</div>
+    <div class="blk dash"></div>
+    <div class="blk score" id="as">0</div>
+    <div class="blk team" id="at"><span class="nm" id="an">VISITANTE</span><img id="al" alt=""><span class="tab"></span></div>
+    <div class="blk time"><div class="t" id="tm">00:00</div><div class="h" id="hf">1ER TIEMPO</div></div>
+    <div class="blk glob" id="gb"><div class="gl">GLOBAL</div><div class="gv" id="gv">0 - 0</div></div>
+    <div class="blk addt" id="ad">+0</div>
+    <div class="stripe"></div>
+  </div>
+  <div id="gfxbox"></div>
+</div>
+<div id="pen" class="sk">
+  <div class="pnlogo"><div class="one">ONE</div><div class="sports">SPORTS</div></div>
+  <div class="pnmain"><div class="pnhead">TANDA DE PENALES</div><div class="pnrow" id="pr1"></div><div class="pnrow" id="pr2"></div></div>
+</div>
+<script src="os-common.js"></script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},esc=OS.esc,fx=null,fxTimer;
+function dots(arr,n){var o='';for(var i=0;i<n;i++){var v=arr[i];o+='<div class="dot '+(v||'')+'">'+(v==='g'?'✓':(v==='m'?'✕':''))+'</div>';}return o;}
+function pg(a){return a.filter(function(x){return x==='g'}).length;}
+function goalFx(S,side){
+  var t=S[side],box=$('gfxbox');
+  var last=null;for(var i=S.goals.length-1;i>=0;i--){var g=S.goals[i];if(g.side===side&&g.ts&&Date.now()-g.ts<40000){last=g;break;}}
+  var left=(side==='h')?210:(210+330+196+330-640);
+  box.innerHTML='<div class="gfx" style="left:'+left+'px"><div class="gtxt">¡GOOOOOOLL!</div><div class="gsub">'+(t.logo?'<img style="display:block" src="'+t.logo+'">':'')+'<span>'+esc(t.name)+'</span><span class="who" id="gwho">'+(last?'· ⚽ '+esc(last.name)+' '+esc(last.min)+"'":'')+'</span></div></div>';
+  fx={side:side,t:Date.now()};
+  var el=box.firstChild;clearTimeout(fxTimer);
+  fxTimer=setTimeout(function(){el.classList.add('out');setTimeout(function(){if(box.firstChild===el)box.innerHTML='';},550);},6500);
+}
+OS.start({
+ render:function(S,prev){
+  var h=S.h,a=S.a;
+  $('hn').textContent=h.name;$('an').textContent=a.name;$('hs').textContent=S.hs;$('as').textContent=S.as;
+  OS.kit($('ht').querySelector('.tab'),h);OS.kit($('at').querySelector('.tab'),a);
+  OS.setImg($('hl'),h.logo);OS.setImg($('al'),a.logo);
+  $('hf').textContent=OS.PL[S.period]||S.period;
+  var ad=$('ad');ad.textContent='+'+S.added;ad.classList.toggle('on',!!(S.showAdded&&S.added>0));
+  var gb=$('gb');gb.classList.toggle('on',!!S.global.on);$('gv').textContent=(S.global.ho+S.hs)+' - '+(S.global.ao+S.as);
+  var c=$('comp');c.classList.toggle('hidden',!(S.show.info&&S.comp));c.textContent=S.comp;
+  var isPen=S.period==='PEN';$('pen').classList.toggle('on',isPen);$('wrap').style.display=isPen?'none':'block';
+  if(isPen){var ph=S.pen.h,pa=S.pen.a,hl=ph.length,al=pa.length,n=Math.max(5,Math.max(hl,al)+((hl===al&&hl>=5&&pg(ph)===pg(pa))?1:0));
+    [['pr1',h,ph],['pr2',a,pa]].forEach(function(r){var t=r[1];$(r[0]).innerHTML='<div class="pnteam"><span class="tab" style="background:linear-gradient(to bottom,'+t.c1+' 50%,'+t.c2+' 50%)"></span>'+(t.logo?'<img src="'+t.logo+'">':'')+'<span>'+esc(t.name)+'</span></div><div class="pndots">'+dots(r[2],n)+'</div><div class="pnscore">'+pg(r[2])+'</div>';});}
+  // animación de GOL cuando sube el marcador
+  if(prev){
+    if(S.hs>prev.hs){var e=$('hs');e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');goalFx(S,'h');}
+    else if(S.as>prev.as){var e2=$('as');e2.classList.remove('flash');void e2.offsetWidth;e2.classList.add('flash');goalFx(S,'a');}
+    // si el goleador se registra justo después de subir el marcador, se agrega al aviso
+    if(fx&&S.goals.length>prev.goals.length&&Date.now()-fx.t<12000){
+      var g=S.goals[S.goals.length-1];var w=$('gwho');if(w&&g.side===fx.side)w.innerHTML='· ⚽ '+esc(g.name)+' '+esc(g.min)+"'";}
+  }
+ },
+ tick:function(S){$('tm').textContent=OS.fmt(OS.secs(S));}
+});
+})();
+</script></body></html>

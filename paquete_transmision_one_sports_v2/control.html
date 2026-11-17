@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONE SPORTS - Panel de transmisión</title>
+<style>
+:root{--navy:#0B1F4B;--dark:#071538;--mid:#13306E;--red:#E10600;--gold:#FFC20E;--gray:#9AA5BC;--green:#19C37D}
+*{box-sizing:border-box}
+body{margin:0;background:var(--dark);color:#fff;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:14px}
+header{background:var(--navy);border-bottom:5px solid var(--gold);padding:8px 14px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header .brand{font-family:Impact,'Arial Black',Arial,sans-serif;font-style:italic;font-size:20px;letter-spacing:2px}
+header .brand b{background:var(--red);padding:1px 8px;margin-left:6px}
+#topScore{font-family:Impact,'Arial Black',Arial,sans-serif;font-size:22px;letter-spacing:1px}
+#topClock{font-family:Impact,'Arial Black',Arial,sans-serif;font-size:30px;color:var(--gold);letter-spacing:2px}
+#topPer{color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:2px}
+nav{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px 0;background:var(--dark)}
+nav button{background:var(--mid);border:none;color:#fff;padding:9px 14px;font-weight:700;cursor:pointer;border-radius:4px 4px 0 0;font-size:13px}
+nav button.act{background:var(--red);box-shadow:0 -4px 0 var(--gold) inset}
+section{display:none;padding:14px;max-width:1100px}
+section.act{display:block}
+h3{margin:0 0 8px;font-family:Impact,'Arial Black',Arial,sans-serif;font-style:italic;letter-spacing:2px;color:var(--gold);font-size:18px}
+.card{background:var(--navy);border-left:6px solid var(--gold);border-radius:4px;padding:12px 14px;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:11px;color:var(--gray);margin:8px 0 3px;text-transform:uppercase;letter-spacing:1px}
+input[type=text],input[type=number],select,textarea{width:100%;padding:7px 9px;background:var(--dark);color:#fff;border:2px solid var(--mid);border-radius:3px;font-size:14px;font-family:inherit}
+textarea{min-height:150px;resize:vertical}
+input[type=color]{width:44px;height:34px;padding:0;border:2px solid var(--mid);background:none}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button.b{cursor:pointer;border:none;border-radius:3px;padding:9px 13px;font-weight:700;color:#fff;background:var(--mid);font-size:13px}
+button.b.r{background:var(--red)} button.b.g{background:var(--gold);color:var(--navy)} button.b.gr{background:var(--green);color:#052}
+button.b:hover{filter:brightness(1.18)} button.b.sel{outline:3px solid var(--gold)}
+.big{font-size:26px;font-weight:700;min-width:46px;text-align:center}
+.list{max-height:220px;overflow:auto;margin-top:8px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--dark);padding:5px 10px;margin-bottom:3px;border-left:4px solid var(--red)}
+.li button{background:var(--red);border:none;color:#fff;cursor:pointer;border-radius:3px;padding:2px 8px}
+small,.hint{color:var(--gray);font-size:12px;line-height:1.5}
+.logoPrev{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:4px;display:none}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;background:var(--mid);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">ONE<b>SPORTS</b></div>
+  <div id="topScore">LOCAL 0 - 0 VISITANTE</div>
+  <div id="topClock">00:00</div><div id="topPer">1ER TIEMPO</div>
+  <button class="b g" id="topGo">▶ / ⏸ Reloj</button>
+  <span class="hint">Panel de transmisión · los cambios se ven al instante en el overlay</span>
+</header>
+<nav id="tabs"></nav>
+
+<!-- ===== PARTIDO ===== -->
+<section id="s-partido">
+  <div class="card"><h3>DATOS DEL PARTIDO</h3>
+    <div class="grid2"><div><label>Torneo / competición</label><input type="text" id="comp" placeholder="Ej: LIGA PROMERICA"></div>
+    <div><label>Árbitro</label><input type="text" id="ref" placeholder="Nombre del árbitro central"></div></div>
+    <div class="row" style="margin-top:8px"><label style="margin:0"><input type="checkbox" id="showInfo"> Mostrar el torneo sobre el marcador</label></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>EQUIPO LOCAL</h3>
+      <label>Nombre</label><input type="text" id="hName" maxlength="18">
+      <div class="row"><div><label>Color uniforme 1</label><input type="color" id="hc1"></div><div><label>Color uniforme 2</label><input type="color" id="hc2"></div>
+      <div><label>Escudo</label><input type="file" id="hLogoF" accept="image/*"></div><img class="logoPrev" id="hPrev"><button class="b" id="hLogoX">Quitar</button></div>
+    </div>
+    <div class="card"><h3>EQUIPO VISITANTE</h3>
+      <label>Nombre</label><input type="text" id="aName" maxlength="18">
+      <div class="row"><div><label>Color uniforme 1</label><input type="color" id="ac1"></div><div><label>Color uniforme 2</label><input type="color" id="ac2"></div>
+      <div><label>Escudo</label><input type="file" id="aLogoF" accept="image/*"></div><img class="logoPrev" id="aPrev"><button class="b" id="aLogoX">Quitar</button></div>
+    </div>
+  </div>
+  <div class="card"><h3>MARCADOR GLOBAL (IDA Y VUELTA)</h3>
+    <label style="margin:0"><input type="checkbox" id="gOn"> Activar marcador global</label>
+    <div class="row"><div style="width:230px"><label>Goles de la IDA — equipo LOCAL de hoy</label><input type="number" id="gHo" min="0" value="0"></div>
+    <div style="width:230px"><label>Goles de la IDA — equipo VISITANTE de hoy</label><input type="number" id="gAo" min="0" value="0"></div></div>
+    <p class="hint">El global se calcula solo: resultado de la ida + goles de este partido.</p>
+  </div>
+  <div class="card"><h3>OPCIONES</h3><div class="row">
+    <button class="b" id="exp">⬇ Guardar partido (archivo)</button>
+    <label style="margin:0" class="b">⬆ Cargar partido<input type="file" id="imp" accept=".json" style="display:none"></label>
+    <button class="b r" id="newMatch">Nuevo partido (borrar todo)</button></div></div>
+</section>
+
+<!-- ===== RELOJ ===== -->
+<section id="s-reloj">
+  <div class="card"><h3>RELOJ DEL PARTIDO</h3>
+    <div class="row"><div id="bigClock" style="font-family:Impact,'Arial Black',Arial,sans-serif;font-size:64px;color:var(--gold);letter-spacing:3px;min-width:200px">00:00</div>
+      <button class="b gr" id="clStart">▶ Iniciar</button><button class="b g" id="clPause">⏸ Pausar</button><button class="b" id="clReset">⟲ Reiniciar</button></div>
+    <div class="row" style="margin-top:10px"><input type="text" id="setT" placeholder="mm:ss (ej. 45:00)" style="width:160px"><button class="b" id="setTb">Fijar tiempo</button>
+      <button class="b" id="p1">−1 s</button><button class="b" id="p2">+1 s</button><button class="b" id="p3">+1 min</button></div>
+  </div>
+  <div class="card"><h3>PERIODO DEL PARTIDO</h3>
+    <div class="row" id="perBtns"></div>
+    <label style="margin-top:10px"><input type="checkbox" id="autoT" checked> Ajustar el reloj automáticamente al cambiar de periodo (2T = 45:00, 1TE = 90:00, 2TE = 105:00)</label>
+    <p class="hint">Al elegir <b>PENALES</b> el marcador cambia al diseño de la tanda de penales.</p>
+  </div>
+  <div class="card"><h3>TIEMPO AÑADIDO</h3>
+    <div class="row"><input type="number" id="addMin" min="0" value="0" style="width:100px"><button class="b g" id="addShow">Mostrar +min</button><button class="b" id="addHide">Ocultar</button></div>
+  </div>
+</section>
+
+<!-- ===== GOLES ===== -->
+<section id="s-goles">
+  <div class="grid2" id="goalCards"></div>
+  <div class="card"><h3>REGISTRO DE GOLES</h3><div class="list" id="goalLog"></div>
+    <p class="hint">El registro solo sirve para los overlays de goleadores y para el aviso de gol. <b>El marcador no cambia al registrar ni al borrar</b>: se sube o baja con los botones de abajo.</p>
+    <h3 style="margin-top:10px">MARCADOR (aquí se sube y baja el resultado)</h3>
+    <div class="row"><button class="b" id="hMinus">− Local</button><span class="big" id="mHs">0</span><button class="b" id="hPlus">+ Local</button>
+    <span style="width:20px"></span><button class="b" id="aMinus">− Visit.</button><span class="big" id="mAs">0</span><button class="b" id="aPlus">+ Visit.</button></div>
+  </div>
+</section>
+
+<!-- ===== ALINEACIONES ===== -->
+<section id="s-alin">
+  <div class="grid2">
+    <div class="card"><h3>LOCAL — ALINEACIÓN</h3>
+      <label>Titulares (uno por línea: número y nombre)</label><textarea id="hSt" placeholder="1 Courtois&#10;8 Valverde&#10;..."></textarea>
+      <label>Suplentes</label><textarea id="hSb" style="min-height:110px"></textarea>
+      <div class="grid2"><div><label>Técnico</label><input type="text" id="hCoach"></div><div><label>Formación</label><input type="text" id="hForm" placeholder="4-3-3"></div></div></div>
+    <div class="card"><h3>VISITANTE — ALINEACIÓN</h3>
+      <label>Titulares (uno por línea: número y nombre)</label><textarea id="aSt"></textarea>
+      <label>Suplentes</label><textarea id="aSb" style="min-height:110px"></textarea>
+      <div class="grid2"><div><label>Técnico</label><input type="text" id="aCoach"></div><div><label>Formación</label><input type="text" id="aForm" placeholder="4-4-2"></div></div></div>
+  </div>
+  <div class="card"><h3>MOSTRAR EN PANTALLA</h3><div class="row">
+    <button class="b r" id="lnH">Alineación LOCAL</button><button class="b r" id="lnA">Alineación VISITANTE</button><button class="b" id="lnX">Ocultar alineación</button></div>
+    <p class="hint">Los jugadores de estas listas aparecen en las pestañas Goles, Cambios y Tarjetas para elegirlos sin escribir.</p></div>
+</section>
+
+<!-- ===== CAMBIOS ===== -->
+<section id="s-cambios">
+  <div class="card"><h3>REGISTRAR CAMBIO</h3>
+    <div class="row"><select id="cbSide" style="width:200px"></select></div>
+    <div class="grid2"><div><label>▼ Sale</label><select id="cbOut"></select></div><div><label>▲ Entra</label><select id="cbIn"></select></div></div>
+    <div class="row"><div style="width:140px"><label>Minuto (vacío = automático)</label><input type="text" id="cbMin"></div></div>
+    <div class="row" style="margin-top:10px"><button class="b r" id="cbGo">Registrar y mostrar cambio</button></div>
+  </div>
+  <div class="card"><h3>CAMBIOS REALIZADOS</h3><div class="list" id="cbLog"></div></div>
+</section>
+
+<!-- ===== TARJETAS ===== -->
+<section id="s-tarjetas">
+  <div class="card"><h3>REGISTRAR TARJETA</h3>
+    <div class="row"><select id="tjSide" style="width:200px"></select></div>
+    <label>Jugador</label><select id="tjPl"></select>
+    <div class="row"><div style="width:140px"><label>Minuto (vacío = automático)</label><input type="text" id="tjMin"></div></div>
+    <div class="row" style="margin-top:10px"><button class="b g" id="tjY">🟨 Tarjeta amarilla</button><button class="b r" id="tjR">🟥 Tarjeta roja</button></div>
+    <p class="hint">Si a un jugador que ya tiene amarilla le pones otra, se muestra como segunda amarilla y expulsión.</p>
+  </div>
+  <div class="card"><h3>TARJETAS MOSTRADAS</h3><div class="list" id="tjLog"></div></div>
+</section>
+
+<!-- ===== PENALES ===== -->
+<section id="s-penales">
+  <div class="card"><h3>TANDA DE PENALES</h3>
+    <div class="row"><button class="b r" id="penOn">Pasar a PENALES (cambia el diseño)</button><button class="b" id="penOff">Volver al marcador normal</button></div>
+  </div>
+  <div class="grid2" id="penCards"></div>
+  <div class="card"><div class="row"><button class="b r" id="penReset">Reiniciar tanda</button></div></div>
+</section>
+
+<!-- ===== GRAFICOS ===== -->
+<section id="s-graficos">
+  <div class="card"><h3>VISIBILIDAD</h3>
+    <label style="margin:0"><input type="checkbox" id="showScorers"> Mostrar el overlay de goleadores</label>
+    <label style="margin:6px 0 0"><input type="checkbox" id="showInfo2"> Mostrar el torneo sobre el marcador</label>
+  </div>
+  <div class="card"><h3>MENSAJE EN PANTALLA</h3>
+    <div class="row"><input type="text" id="msgT" placeholder="Título (opcional)" style="width:240px"><input type="text" id="msgX" placeholder="Texto del mensaje" style="flex:1"><button class="b r" id="msgGo">Mostrar</button></div></div>
+  <div class="card"><h3>CÓMO USARLO</h3><p class="hint">Los enlaces de cada overlay están en la pestaña <b>OVERLAYS</b>. Este panel puede ir como <b>Dock</b> de OBS. Más detalles en LEEME.txt.</p></div>
+</section>
+
+
+<!-- ===== OVERLAYS ===== -->
+<section id="s-overlays">
+  <div class="card"><h3>ENLACES PARA OBS</h3>
+    <p class="hint">Cada overlay es una fuente de <b>Navegador</b> distinta en OBS (1920 × 1080). Copia el enlace y pégalo en el campo URL de la fuente. Todos tienen fondo transparente.</p>
+    <div id="ovLinks"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>MOSTRAR / OCULTAR</h3>
+      <div class="row"><button class="b r" id="ovScorers">Goleadores (overlay 3)</button><button class="b r" id="ovRef">Árbitro (overlay 2)</button></div>
+      <div class="row" style="margin-top:8px"><button class="b r" id="ovLnH">Alineación local</button><button class="b r" id="ovLnA">Alineación visitante</button></div>
+      <p class="hint">El marcador, los cambios, las tarjetas y los mensajes funcionan solos. Los cambios, tarjetas y mensajes aparecen cuando los registras en su pestaña.</p>
+    </div>
+    <div class="card"><h3>DATOS DEL ÁRBITRO</h3>
+      <label>Árbitro central (también en la pestaña PARTIDO)</label><input type="text" id="ref2">
+      <label>Asistente 1</label><input type="text" id="rA1"><label>Asistente 2</label><input type="text" id="rA2">
+      <label>Cuarto árbitro</label><input type="text" id="rA4"><label>VAR</label><input type="text" id="rVar">
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+var KEY='os_state_v1',EKEY='os_event_v1';
+var $=function(i){return document.getElementById(i)};
+function def(){return{comp:'',ref:'',
+ h:{name:'LOCAL',c1:'#E10600',c2:'#FFFFFF',logo:'',starters:'',subs:'',coach:'',form:''},
+ a:{name:'VISITANTE',c1:'#FFC20E',c2:'#0B1F4B',logo:'',starters:'',subs:'',coach:'',form:''},
+ hs:0,as:0,goals:[],clock:{base:0,t0:0,run:false},period:'1T',added:0,showAdded:false,
+ global:{on:false,ho:0,ao:0},pen:{h:[],a:[]},subsLog:[],cards:[],
+ show:{info:true,scorers:false,lineup:null,ref:false},refx:{a1:'',a2:'',a4:'',var:''}};}
+var S;try{S=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){S=null;}
+if(!S)S=def(); else{var d=def();for(var k in d){if(S[k]===undefined)S[k]=d[k];}S.show=Object.assign({},d.show,S.show);S.refx=Object.assign({},d.refx,S.refx);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('No se pudo guardar (almacenamiento lleno). Usa escudos más pequeños.');}}
+function emit(ev){ev.id=Date.now()+Math.random();localStorage.setItem(EKEY,JSON.stringify(ev));}
+function secs(){var c=S.clock;return Math.floor(c.base+(c.run?(Date.now()-c.t0)/1000:0));}
+function fmt(n){n=Math.max(0,n);var m=Math.floor(n/60),s=n%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
+var PL={'1T':'1er tiempo','ET':'Entretiempo','2T':'2do tiempo','1TE':'1er t. extra','2TE':'2do t. extra','PEN':'Penales','FIN':'Final'};
+function parse(t){return (t||'').split('\n').map(function(l){return l.trim()}).filter(Boolean).map(function(l){var m=/^(\d{1,2})\s*[\.\-–:]?\s+(.+)$/.exec(l);return m?{n:m[1],name:m[2]}:{n:'',name:l};});}
+function lab(p){return (p.n?p.n+' · ':'')+p.name;}
+function autoMin(){var m=Math.floor(secs()/60)+1,p=S.period;
+  var lim={'1T':45,'2T':90,'1TE':105,'2TE':120}[p];
+  if(lim&&m>lim)return lim+'+'+(m-lim);return String(m);}
+// ===== tabs =====
+var TABS=[['partido','PARTIDO'],['reloj','RELOJ'],['goles','GOLES'],['alin','ALINEACIONES'],['cambios','CAMBIOS'],['tarjetas','TARJETAS'],['penales','PENALES'],['graficos','GRÁFICOS'],['overlays','OVERLAYS']];
+TABS.forEach(function(t,i){var b=document.createElement('button');b.textContent=t[1];b.dataset.t=t[0];b.onclick=function(){go(t[0])};$('tabs').appendChild(b);});
+function go(id){TABS.forEach(function(t){$('s-'+t[0]).classList.toggle('act',t[0]===id);});
+  [].forEach.call($('tabs').children,function(b){b.classList.toggle('act',b.dataset.t===id);});refreshLists();}
+// ===== helpers de UI =====
+function bind(id,fn,ev){$(id)[ev||'oninput']=fn;}
+function commit(){save();refreshTop();}
+// ---- partido
+function fillPartido(){
+  $('comp').value=S.comp;$('ref').value=S.ref;$('showInfo').checked=S.show.info;$('showInfo2').checked=S.show.info;$('showScorers').checked=S.show.scorers;
+  $('hName').value=S.h.name;$('aName').value=S.a.name;
+  $('hc1').value=S.h.c1;$('hc2').value=S.h.c2;$('ac1').value=S.a.c1;$('ac2').value=S.a.c2;
+  prev('h');prev('a');
+  $('gOn').checked=S.global.on;$('gHo').value=S.global.ho;$('gAo').value=S.global.ao;
+  $('ref2').value=S.ref;$('rA1').value=S.refx.a1;$('rA2').value=S.refx.a2;$('rA4').value=S.refx.a4;$('rVar').value=S.refx['var'];
+  $('hSt').value=S.h.starters;$('hSb').value=S.h.subs;$('hCoach').value=S.h.coach;$('hForm').value=S.h.form;
+  $('aSt').value=S.a.starters;$('aSb').value=S.a.subs;$('aCoach').value=S.a.coach;$('aForm').value=S.a.form;
+}
+function prev(s){var im=$(s+'Prev');if(S[s].logo){im.src=S[s].logo;im.style.display='block';}else{im.style.display='none';}}
+bind('comp',function(){S.comp=this.value;commit()});bind('ref',function(){S.ref=this.value;$('ref2').value=this.value;commit()});
+$('showInfo').onchange=function(){S.show.info=this.checked;$('showInfo2').checked=this.checked;commit()};
+$('showInfo2').onchange=function(){S.show.info=this.checked;$('showInfo').checked=this.checked;commit()};
+$('showScorers').onchange=function(){S.show.scorers=this.checked;commit()};
+bind('hName',function(){S.h.name=this.value.toUpperCase();commit();refreshLists()});bind('aName',function(){S.a.name=this.value.toUpperCase();commit();refreshLists()});
+['h','a'].forEach(function(s){bind(s+'c1',function(){S[s].c1=this.value;commit()});bind(s+'c2',function(){S[s].c2=this.value;commit()});
+  $(s+'LogoX').onclick=function(){S[s].logo='';prev(s);commit()};
+  $(s+'LogoF').onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+    var m=220,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);S[s].logo=c.toDataURL('image/png');prev(s);commit();};im.src=r.result;};r.readAsDataURL(f);};
+});
+$('gOn').onchange=function(){S.global.on=this.checked;commit()};
+bind('gHo',function(){S.global.ho=parseInt(this.value)||0;commit()});bind('gAo',function(){S.global.ao=parseInt(this.value)||0;commit()});
+$('exp').onclick=function(){var a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(S));a.download='partido_one_sports.json';a.click();};
+$('imp').onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{S=Object.assign(def(),JSON.parse(r.result));save();fillAll();}catch(e){alert('Archivo no válido');}};r.readAsText(f);};
+$('newMatch').onclick=function(){if(confirm('¿Borrar todo el partido y empezar uno nuevo?')){S=def();save();fillAll();}};
+// ---- reloj
+function setClock(v,run){S.clock.base=v;S.clock.t0=Date.now();S.clock.run=!!run;commit();}
+$('clStart').onclick=function(){if(!S.clock.run){S.clock.t0=Date.now();S.clock.run=true;commit();}};
+$('clPause').onclick=function(){if(S.clock.run){S.clock.base=secs();S.clock.run=false;commit();}};
+$('topGo').onclick=function(){S.clock.run?$('clPause').onclick():$('clStart').onclick();};
+$('clReset').onclick=function(){setClock(0,false)};
+$('setTb').onclick=function(){var m=/^(\d{1,3}):([0-5]?\d)$/.exec($('setT').value.trim());if(m)setClock(+m[1]*60+ +m[2],S.clock.run);};
+$('p1').onclick=function(){setClock(Math.max(0,secs()-1),S.clock.run)};$('p2').onclick=function(){setClock(secs()+1,S.clock.run)};$('p3').onclick=function(){setClock(secs()+60,S.clock.run)};
+var PER=[['1T','1er tiempo',0],['ET','Entretiempo',45*60],['2T','2do tiempo',45*60],['1TE','1er tiempo extra',90*60],['2TE','2do tiempo extra',105*60],['PEN','Penales',null],['FIN','Final',null]];
+PER.forEach(function(p){var b=document.createElement('button');b.className='b';b.id='per_'+p[0];b.textContent=p[1];
+  b.onclick=function(){S.period=p[0];var cur=secs();
+    if($('autoT').checked&&p[2]!==null){setClock(p[2],false);}else{S.clock.base=cur;S.clock.run=false;}
+    if(p[0]==='PEN'||p[0]==='FIN'||p[0]==='ET'){S.clock.base=secs();S.clock.run=false;}
+    commit();refreshTop();};
+  $('perBtns').appendChild(b);});
+$('addShow').onclick=function(){S.added=parseInt($('addMin').value)||0;S.showAdded=true;commit();};
+$('addHide').onclick=function(){S.showAdded=false;commit();};
+// ---- goles
+function players(side){var t=S[side];return parse(t.starters).concat(parse(t.subs));}
+function goalCard(side){var t=S[side],id=side;
+  return '<div class="card"><h3>GOL — '+(side==='h'?'LOCAL':'VISITANTE')+' <span class="pill" id="'+id+'Nm">'+t.name+'</span></h3>'+
+   '<label>Goleador (de la lista de alineación)</label><select id="'+id+'Sel"></select>'+
+   '<label>O escribe el nombre</label><input type="text" id="'+id+'Free" placeholder="Opcional">'+
+   '<div class="row"><div style="width:140px"><label>Minuto (vacío = auto)</label><input type="text" id="'+id+'Min"></div>'+
+   '<div style="width:170px"><label>Tipo</label><select id="'+id+'Ty"><option value="g">Gol</option><option value="pen">Gol de penal</option><option value="og">Autogol</option></select></div></div>'+
+   '<div class="row" style="margin-top:10px"><button class="b r" id="'+id+'Go">📝 Registrar goleador</button></div><p class="hint">Solo agrega al jugador a la lista. No cambia el marcador.</p></div>';}
+$('goalCards').innerHTML=goalCard('h')+goalCard('a');
+['h','a'].forEach(function(s){$(s+'Go').onclick=function(){
+  var free=$(s+'Free').value.trim(),sel=$(s+'Sel').value,name=free||sel;if(!name){if(!confirm('No elegiste goleador. ¿Registrar el gol igual?'))return;name='GOL';}
+  var min=$(s+'Min').value.trim()||autoMin(),ty=$(s+'Ty').value,ben=(ty==='og')?(s==='h'?'a':'h'):s;
+  S.goals.push({side:ben,name:name,min:min,type:ty,ts:Date.now()});
+  $(s+'Free').value='';$(s+'Min').value='';$(s+'Ty').value='g';
+  commit();refreshLists();};});
+$('hPlus').onclick=function(){S.hs++;commit();refreshLists()};$('hMinus').onclick=function(){S.hs=Math.max(0,S.hs-1);commit();refreshLists()};
+$('aPlus').onclick=function(){S.as++;commit();refreshLists()};$('aMinus').onclick=function(){S.as=Math.max(0,S.as-1);commit();refreshLists()};
+// ---- alineaciones
+['hSt','hSb','aSt','aSb'].forEach(function(id){bind(id,function(){S[id[0]][id.slice(1)==='St'?'starters':'subs']=this.value;commit();refreshLists()});});
+bind('hCoach',function(){S.h.coach=this.value;commit()});bind('aCoach',function(){S.a.coach=this.value;commit()});
+bind('hForm',function(){S.h.form=this.value;commit()});bind('aForm',function(){S.a.form=this.value;commit()});
+function showLn(s){S.show.lineup=(S.show.lineup===s)?null:s;commit();}
+$('lnH').onclick=function(){showLn('h')};$('lnA').onclick=function(){showLn('a')};$('lnX').onclick=function(){S.show.lineup=null;commit()};
+// ---- cambios
+function selSide(id){var e=$(id);e.innerHTML='<option value="h">LOCAL — '+S.h.name+'</option><option value="a">VISITANTE — '+S.a.name+'</option>';}
+function onField(side){ // titulares que no salieron + suplentes que entraron y no salieron
+  var st=parse(S[side].starters),sb=parse(S[side].subs),out=[],inn=[];
+  S.subsLog.filter(function(x){return x.side===side}).forEach(function(x){out.push(x.out);inn.push(x.inn);});
+  var field=st.filter(function(p){return out.indexOf(lab(p))<0}).concat(sb.filter(function(p){return inn.indexOf(lab(p))>=0&&out.indexOf(lab(p))<0}));
+  var bench=sb.filter(function(p){return inn.indexOf(lab(p))<0});return {field:field,bench:bench};}
+function fillCambios(){var side=$('cbSide').value||'h';var o=onField(side);
+  $('cbOut').innerHTML=o.field.map(function(p){return '<option>'+lab(p)+'</option>'}).join('');
+  $('cbIn').innerHTML=o.bench.map(function(p){return '<option>'+lab(p)+'</option>'}).join('');
+  $('cbLog').innerHTML=S.subsLog.map(function(x,i){return '<div class="li"><span>'+x.min+"' · "+(x.side==='h'?S.h.name:S.a.name)+' · ▲ '+x.inn+' ▼ '+x.out+'</span><button data-i="'+i+'">✕</button></div>'}).join('')||'<small>Sin cambios todavía</small>';
+  [].forEach.call($('cbLog').querySelectorAll('button'),function(b){b.onclick=function(){S.subsLog.splice(+b.dataset.i,1);commit();fillCambios();};});}
+$('cbSide').onchange=fillCambios;
+$('cbGo').onclick=function(){var side=$('cbSide').value,out=$('cbOut').value,inn=$('cbIn').value;if(!out||!inn){alert('Elige quién sale y quién entra (carga primero las alineaciones).');return;}
+  var min=$('cbMin').value.trim()||autoMin();S.subsLog.push({side:side,out:out,inn:inn,min:min});$('cbMin').value='';commit();
+  emit({t:'sub',side:side,out:out.replace(/^\d+ · /,''),inn:inn.replace(/^\d+ · /,''),min:min});fillCambios();};
+// ---- tarjetas
+function fillTarjetas(){var side=$('tjSide').value||'h';var o=onField(side);var list=o.field;
+  $('tjPl').innerHTML=list.map(function(p){return '<option>'+lab(p)+'</option>'}).join('');
+  $('tjLog').innerHTML=S.cards.map(function(x,i){var ic=x.type==='y'?'🟨':'🟥';return '<div class="li"><span>'+x.min+"' · "+ic+' '+(x.type==='y2'?'(2ª amarilla) ':'')+x.player+' · '+(x.side==='h'?S.h.name:S.a.name)+'</span><button data-i="'+i+'">✕</button></div>'}).join('')||'<small>Sin tarjetas todavía</small>';
+  [].forEach.call($('tjLog').querySelectorAll('button'),function(b){b.onclick=function(){S.cards.splice(+b.dataset.i,1);commit();fillTarjetas();};});}
+$('tjSide').onchange=fillTarjetas;
+function card(type){var side=$('tjSide').value,pl=$('tjPl').value;if(!pl){alert('Elige un jugador (carga primero las alineaciones).');return;}
+  var min=$('tjMin').value.trim()||autoMin(),t=type;
+  if(type==='y'){var prevY=S.cards.filter(function(c){return c.side===side&&c.player===pl&&c.type==='y'}).length;if(prevY>=1)t='y2';}
+  S.cards.push({side:side,player:pl,type:t,min:min});$('tjMin').value='';commit();
+  emit({t:'card',side:side,player:pl.replace(/^\d+ · /,''),ctype:t,min:min});fillTarjetas();}
+$('tjY').onclick=function(){card('y')};$('tjR').onclick=function(){card('r')};
+// ---- penales
+function penCard(side){return '<div class="card"><h3>PENALES — '+(side==='h'?'LOCAL':'VISITANTE')+' <span class="pill" id="'+side+'pNm"></span></h3><div class="row"><span class="big" id="'+side+'pSc">0</span><div id="'+side+'pDots"></div></div>'+
+ '<div class="row" style="margin-top:10px"><button class="b gr" id="'+side+'pG">✔ Gol</button><button class="b r" id="'+side+'pM">✖ Falló</button><button class="b" id="'+side+'pU">⟲ Deshacer</button></div></div>';}
+$('penCards').innerHTML=penCard('h')+penCard('a');
+['h','a'].forEach(function(s){$(s+'pG').onclick=function(){S.pen[s].push('g');commit();fillPen()};$(s+'pM').onclick=function(){S.pen[s].push('m');commit();fillPen()};$(s+'pU').onclick=function(){S.pen[s].pop();commit();fillPen()};});
+$('penOn').onclick=function(){$('per_PEN').click();};$('penOff').onclick=function(){$('per_2T').click();};
+$('penReset').onclick=function(){S.pen={h:[],a:[]};commit();fillPen();};
+function fillPen(){['h','a'].forEach(function(s){$(s+'pNm').textContent=S[s].name;var a=S.pen[s];$(s+'pSc').textContent=a.filter(function(x){return x==='g'}).length;
+  $(s+'pDots').innerHTML=a.map(function(x){return '<span style="font-size:22px">'+(x==='g'?'🟢':'🔴')+'</span>'}).join('')||'<small>sin cobros</small>';});}
+
+// ---- overlays
+var OVS=[['scoreboard.html','1 · MARCADOR','Logo, colores, nombres, escudos, resultado, tiempo, añadido, global, torneo y animación de GOL (también la tanda de penales)'],
+ ['referee.html','2 · ÁRBITRO','Datos del árbitro (se muestra con el botón)'],
+ ['scorers.html','3 · GOLEADORES','Goleadores con minuto, sobre el marcador (se muestra con el botón)'],
+ ['lineup.html','4 · ALINEACIONES','Alineación local o visitante'],
+ ['subs.html','5 · CAMBIOS','Aviso de cambio al registrarlo'],
+ ['cards.html','6 · TARJETAS','Tarjeta amarilla o roja con su icono'],
+ ['messages.html','7 · MENSAJES','Mensajes en pantalla']];
+var BASE=location.href.replace(/[#?].*$/,'').replace(/control\.html$/,'');
+$('ovLinks').innerHTML=OVS.map(function(o,i){return '<div class="li" style="display:block;border-left-color:var(--gold)"><b>'+o[1]+'</b> <small>'+o[2]+'</small>'+
+ '<div class="row" style="margin-top:5px"><input type="text" readonly id="ovU'+i+'" value="'+BASE+o[0]+'" style="flex:1;min-width:260px"><button class="b g" data-c="'+i+'">Copiar enlace</button><button class="b" data-p="'+i+'">Vista previa</button></div></div>'}).join('');
+[].forEach.call($('ovLinks').querySelectorAll('button[data-c]'),function(b){b.onclick=function(){var inp=$('ovU'+b.dataset.c);inp.focus();inp.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}b.textContent=ok?'¡Copiado!':'Seleccionado: Ctrl+C';setTimeout(function(){b.textContent='Copiar enlace'},1800);};});
+[].forEach.call($('ovLinks').querySelectorAll('button[data-p]'),function(b){b.onclick=function(){window.open($('ovU'+b.dataset.p).value+'#preview','_blank');};});
+$('ovScorers').onclick=function(){S.show.scorers=!S.show.scorers;$('showScorers').checked=S.show.scorers;commit();};
+$('ovRef').onclick=function(){S.show.ref=!S.show.ref;commit();};
+$('ovLnH').onclick=function(){showLn('h')};$('ovLnA').onclick=function(){showLn('a')};
+bind('ref2',function(){S.ref=this.value;$('ref').value=this.value;commit()});
+[['rA1','a1'],['rA2','a2'],['rA4','a4'],['rVar','var']].forEach(function(r){bind(r[0],function(){S.refx[r[1]]=this.value;commit()});});
+// ---- mensaje
+$('msgGo').onclick=function(){emit({t:'msg',title:$('msgT').value,text:$('msgX').value});};
+// ===== refrescos =====
+function refreshTop(){
+  $('topScore').textContent=S.h.name+' '+S.hs+' - '+S.as+' '+S.a.name;$('topClock').textContent=fmt(secs());$('topPer').textContent=PL[S.period]||S.period;
+  $('bigClock').textContent=fmt(secs());$('mHs').textContent=S.hs;$('mAs').textContent=S.as;
+  PER.forEach(function(p){$('per_'+p[0]).classList.toggle('sel',S.period===p[0]);});
+  $('ovScorers').classList.toggle('sel',!!S.show.scorers);$('ovRef').classList.toggle('sel',!!S.show.ref);$('ovLnH').classList.toggle('sel',S.show.lineup==='h');$('ovLnA').classList.toggle('sel',S.show.lineup==='a');$('lnH').classList.toggle('sel',S.show.lineup==='h');$('lnA').classList.toggle('sel',S.show.lineup==='a');
+}
+function refreshLists(){
+  ['h','a'].forEach(function(s){var sel=$(s+'Sel'),cur=sel.value;sel.innerHTML='<option value="">— elegir jugador —</option>'+players(s).map(function(p){return '<option value="'+p.name.replace(/"/g,'&quot;')+'">'+lab(p)+'</option>'}).join('');sel.value=cur;$(s+'Nm').textContent=S[s].name;});
+  var cs=$('cbSide').value,ts=$('tjSide').value;selSide('cbSide');selSide('tjSide');if(cs)$('cbSide').value=cs;if(ts)$('tjSide').value=ts;
+  fillCambios();fillTarjetas();fillPen();
+  $('goalLog').innerHTML=S.goals.map(function(g,i){return '<div class="li"><span>⚽ '+g.min+"' · "+g.name+(g.type==='pen'?' (P)':'')+(g.type==='og'?' (A.G.)':'')+' · '+(g.side==='h'?S.h.name:S.a.name)+'</span><button data-i="'+i+'">✕</button></div>'}).join('')||'<small>Sin goles todavía</small>';
+  [].forEach.call($('goalLog').querySelectorAll('button'),function(b){b.onclick=function(){S.goals.splice(+b.dataset.i,1);commit();refreshLists();};});
+  refreshTop();
+}
+function fillAll(){fillPartido();refreshLists();}
+fillAll();go('partido');setInterval(refreshTop,250);
+window.addEventListener('storage',function(){/* otro panel cambió el estado */});
+})();
+</script>
+</body>
+</html>

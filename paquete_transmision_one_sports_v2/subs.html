@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>ONE SPORTS - Cambios</title>
+<link rel="stylesheet" href="os-common.css"></head>
+<body><div id="lt"></div>
+<script src="os-common.js"></script>
+<script>
+(function(){
+var box=document.getElementById('lt'),esc=OS.esc;
+OS.start({event:function(ev,S){
+  var t=S[ev.side||'h'];
+  if(ev.t==='sub'){
+    OS.showLT(box,'sub','⇄',t.name,t.logo,'<span class="up-i">▲</span> '+esc(ev.inn),'<span class="dn-i">▼</span> '+esc(ev.out)+' &nbsp;·&nbsp; '+esc(ev.min)+"'",7000);
+
+
+  }
+}});
+})();
+</script></body></html>

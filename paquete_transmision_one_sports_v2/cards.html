@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>ONE SPORTS - Tarjetas</title>
+<link rel="stylesheet" href="os-common.css"></head>
+<body><div id="lt"></div>
+<script src="os-common.js"></script>
+<script>
+(function(){
+var box=document.getElementById('lt'),esc=OS.esc;
+OS.start({event:function(ev,S){
+  var t=S[ev.side||'h'];
+  if(ev.t==='card'){
+
+    var lab=ev.ctype==='y'?'TARJETA AMARILLA':(ev.ctype==='y2'?'SEGUNDA AMARILLA · EXPULSADO':'TARJETA ROJA');
+    OS.showLT(box,'card','<div class="cardico" style="background:'+(ev.ctype==='y'?'#FFD400':'#E10600')+'"></div>',t.name,t.logo,esc(ev.player),lab+' &nbsp;·&nbsp; '+esc(ev.min)+"'",7000);
+
+  }
+}});
+})();
+</script></body></html>

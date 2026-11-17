@@ -1,0 +1,55 @@
+PAQUETE DE TRANSMISIÓN ONE SPORTS  (versión 2: overlays separados)
+==================================================================
+
+IMPORTANTE: guarda TODOS los archivos juntos en una misma carpeta (no los separes).
+
+ARCHIVOS
+  control.html   -> EL PANEL (aquí manejas todo)
+  scoreboard.html-> Overlay 1: marcador (logo, colores, escudos, nombres, resultado, tiempo,
+                    añadido, global, torneo y animación GOOOOOOLL). También la tanda de penales.
+  referee.html   -> Overlay 2: árbitro
+  scorers.html   -> Overlay 3: goleadores (se coloca justo encima del marcador)
+  lineup.html    -> Overlay 4: alineaciones
+  subs.html      -> Overlay 5: cambios
+  cards.html     -> Overlay 6: tarjetas (con icono amarillo o rojo)
+  messages.html  -> Overlay 7: mensajes en pantalla
+  os-common.css / os-common.js -> archivos de apoyo (no los borres)
+
+CÓMO PONERLO EN OBS
+1) Abre control.html (en Chrome o como Dock de OBS). Ve a la pestaña OVERLAYS.
+   Ahí aparece el ENLACE de cada overlay. Pulsa "Copiar enlace".
+2) En OBS: Fuentes > + > Navegador. Pega el enlace en URL.
+   (También puedes marcar "Archivo local" y elegir el archivo .html de la carpeta.)
+   Ancho 1920 y Alto 1080. Haz esto una vez por cada overlay.
+3) Los 7 overlays quedan con FONDO TRANSPARENTE: no tapan tu transmisión.
+   Para verlos en el navegador con un fondo de prueba, usa el botón "Vista previa".
+4) Panel como Dock dentro de OBS (recomendado, para que todo se sincronice):
+   Menú Docks > Docks de navegador personalizados > Nombre "Panel ONE SPORTS"
+   y pega el enlace de control.html. Aplicar.
+   Pon el panel y los overlays en el MISMO sitio (todo en OBS o todo en el mismo navegador).
+
+ORDEN SUGERIDO DE CAPAS EN OBS (de abajo hacia arriba)
+  Video > Marcador (1) > Goleadores (3) > Alineaciones (4) > Cambios (5) > Tarjetas (6)
+  > Mensajes (7) > Árbitro (2)
+  El overlay 3 debe ir ENCIMA del 1 y en la misma posición: así lo cubre perfectamente.
+
+CÓMO FUNCIONA
+- MARCADOR: el resultado se cambia en la pestaña GOLES con los botones + y -.
+  Cada vez que el resultado SUBE sale la animación GOOOOOOLL debajo del equipo que anotó.
+- REGISTRO DE GOLES (pestaña GOLES): elegir al goleador NO sube ni baja el marcador.
+  Sirve para el overlay de goleadores y para mostrar el nombre en la animación de gol
+  (si registras al goleador hasta 40 segundos antes o 12 segundos después de subir el marcador).
+- GOLEADORES (overlay 3): se muestra u oculta con el botón en la pestaña OVERLAYS.
+  Muestra el logo del canal en el centro, los goleadores de cada equipo con su minuto y,
+  como separador, el tiempo que va corriendo (el mismo del marcador).
+- ÁRBITRO (overlay 2): se muestra u oculta con el botón en OVERLAYS. Datos opcionales: asistentes,
+  cuarto árbitro y VAR.
+- ALINEACIONES: botones en las pestañas ALINEACIONES u OVERLAYS (local o visitante).
+- CAMBIOS y TARJETAS: aparecen solos al registrarlos en su pestaña.
+- MENSAJES: pestaña GRÁFICOS > "Mensaje en pantalla".
+- PENALES: al pasar el periodo a PENALES, el overlay 1 cambia al diseño de la tanda.
+
+ANTES DEL PARTIDO
+- Pestaña PARTIDO: torneo, árbitro, nombres, 2 colores de uniforme por equipo, escudos, global.
+- Pestaña ALINEACIONES: titulares (uno por línea: "10 Mbappé"), suplentes, técnico y formación.
+- Guarda el partido con "Guardar partido" para reutilizarlo.

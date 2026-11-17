@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>ONE SPORTS - Alineaciones</title>
+<link rel="stylesheet" href="os-common.css"></head>
+<body><div id="lineup" class="sk"></div>
+<script src="os-common.js"></script>
+<script>
+(function(){
+var el=document.getElementById('lineup'),esc=OS.esc,curSide='';
+OS.start({render:function(S){
+  var side=S.show.lineup;
+  if(!side){el.classList.remove('on');el.innerHTML='';curSide='';return;}
+  var t=S[side],st=OS.parse(t.starters),sb=OS.parse(t.subs);
+  var html='<div class="lh"><span class="tab" style="background:linear-gradient(to bottom,'+t.c1+' 50%,'+t.c2+' 50%)"></span>'+(t.logo?'<img src="'+t.logo+'">':'')+'<div class="lnm">'+esc(t.name)+'</div>'+(t.form?'<div class="lform">'+esc(t.form)+'</div>':'')+'</div><div class="lstripe">ALINEACIÓN</div><div class="lb">';
+  st.forEach(function(p){html+='<div class="lrow"><div class="n">'+esc(p.n||'')+'</div><div class="p">'+esc(p.name)+'</div></div>';});
+  html+='</div>';
+  if(sb.length){html+='<div class="lsubs"><div class="st">SUPLENTES</div><div class="grid">';sb.forEach(function(p){html+='<div class="s"><b>'+esc(p.n||'')+'</b>'+esc(p.name)+'</div>';});html+='</div></div>';}
+  if(t.coach)html+='<div class="lcoach"><span>DT</span>'+esc(t.coach)+'</div>';
+  el.innerHTML=html;
+  if(curSide!==side||!el.classList.contains('on')){el.classList.remove('on');void el.offsetWidth;el.classList.add('on');}
+  curSide=side;
+  // ajustar si la tarjeta es muy alta
+  el.style.transform='skewX(-10deg)';var h=el.offsetHeight,avail=1060-290;
+  if(h>avail){el.style.transform='skewX(-10deg) scale('+(avail/h).toFixed(3)+')';}
+}});
+})();
+</script></body></html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>ONE SPORTS - Árbitro</title>
+<link rel="stylesheet" href="os-common.css"></head>
+<body><div id="lt" class="right"></div>
+<script src="os-common.js"></script>
+<script>
+(function(){
+var box=document.getElementById('lt'),cur='';
+OS.start({render:function(S){
+  var x=S.refx,lines='';
+  if(x.a1)lines+='<div class="xtra"><b>ASISTENTE 1</b>'+OS.esc(x.a1)+'</div>';
+  if(x.a2)lines+='<div class="xtra"><b>ASISTENTE 2</b>'+OS.esc(x.a2)+'</div>';
+  if(x.a4)lines+='<div class="xtra"><b>4.º ÁRBITRO</b>'+OS.esc(x.a4)+'</div>';
+  if(x['var'])lines+='<div class="xtra"><b>VAR</b>'+OS.esc(x['var'])+'</div>';
+  var sig=JSON.stringify([S.ref,x]);
+  if(!S.show.ref||!S.ref){var e0=box.querySelector('.lt');if(e0)e0.classList.remove('on');cur='';return;}
+  if(sig!==cur||!box.querySelector('.lt')){cur=sig;
+    box.innerHTML='<div class="lt ref"><div class="l">ÁRBITRO</div><div class="r"><div class="who">'+OS.esc(S.ref)+'</div>'+lines+'</div></div>';
+    var e=box.firstChild;void e.offsetWidth;e.classList.add('on');}
+  else{var el=box.querySelector('.lt');el.classList.add('on');}
+}});
+})();
+</script></body></html>

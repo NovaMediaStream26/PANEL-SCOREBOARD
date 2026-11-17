@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>ONE SPORTS - Goleadores</title>
+<link rel="stylesheet" href="os-common.css"></head>
+<body>
+<div id="wrap" class="sk scw" style="opacity:0;transform:skewX(-10deg) translateY(-20px)">
+  <div class="srow">
+    <div class="col h" id="scH"></div><div class="mid" id="mid">00:00</div><div class="col a" id="scA"></div>
+  </div>
+  <div id="sb">
+    <div class="blk logo"><div class="one">ONE</div><div class="sports">SPORTS</div></div>
+    <div class="blk team" id="ht"><span class="tab"></span><img id="hl" alt=""><span class="nm" id="hn">LOCAL</span></div>
+    <div class="blk chan"><div class="one">ONE</div><div class="sports">SPORTS</div></div>
+    <div class="blk team" id="at"><span class="nm" id="an">VISITANTE</span><img id="al" alt=""><span class="tab"></span></div>
+    <div class="stripe"></div>
+  </div>
+</div>
+<script src="os-common.js"></script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},esc=OS.esc;
+OS.start({
+ render:function(S){
+  $('hn').textContent=S.h.name;$('an').textContent=S.a.name;
+  OS.kit($('ht').querySelector('.tab'),S.h);OS.kit($('at').querySelector('.tab'),S.a);
+  OS.setImg($('hl'),S.h.logo);OS.setImg($('al'),S.a.logo);
+  var gh='',ga='';
+  S.goals.forEach(function(g){
+    var tx=esc(g.name)+'<b>'+esc(g.min)+"'"+(g.type==='pen'?' (P)':'')+(g.type==='og'?' (A.G.)':'')+'</b>';
+    var row='<div class="sline">⚽ '+tx+'</div>';if(g.side==='h')gh+=row;else ga+=row;});
+  $('scH').innerHTML=gh;$('scA').innerHTML=ga;
+  var w=$('wrap'),on=!!S.show.scorers;
+  w.style.opacity=on?1:0;w.style.transform='skewX(-10deg) translateY('+(on?0:-20)+'px)';w.style.pointerEvents='none';
+ },
+ tick:function(S){$('mid').textContent=OS.fmt(OS.secs(S));}
+});
+})();
+</script></body></html>
